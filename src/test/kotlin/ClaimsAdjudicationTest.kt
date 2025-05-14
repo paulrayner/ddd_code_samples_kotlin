@@ -7,12 +7,15 @@ import java.time.LocalDate
 class ClaimsAdjudicationTest {
     fun fakeContract(): Contract {
         val product = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        val contract = Contract(100.0, product, LocalDate.of(2010, 5, 7), LocalDate.of(2010, 5, 8), LocalDate.of(2013, 5, 8))
+        val termsAndConditions =
+            TermsAndConditions(LocalDate.of(2010, 5, 7), LocalDate.of(2010, 5, 8), LocalDate.of(2013, 5, 8))
+        val contract = Contract(100.0, product, termsAndConditions)
         contract.status = Contract.Status.ACTIVE
 
         return contract
     }
 
+    // Now that we have this logic moved to Contract, we could create a test double for contract.Covers() and simplify these tests
     @Test
     fun adjudicateValidClaim() {
         val contract = fakeContract()

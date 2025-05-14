@@ -9,17 +9,33 @@ import java.util.*
  * ACTIVE between effective and expiration dates, and EXPIRED after
  * the expiration date.
  */
-class Contract(var purchasePrice: Double, var coveredProduct: Product, var purchaseDate: LocalDate, var effectiveDate: LocalDate, var expirationDate: LocalDate) {
+class Contract(var purchasePrice: Double, var coveredProduct: Product, var termsAndConditions: TermsAndConditions) {
     enum class Status {
         PENDING, ACTIVE, EXPIRED
     }
-    var id : UUID = UUID.randomUUID()
-    var status : Status = Status.PENDING
+
+    var id: UUID = UUID.randomUUID()
+    var status: Status = Status.PENDING
 
     val claims: MutableList<Claim> = mutableListOf()
 
     fun add(claim: Claim) {
         claims.add(claim)
+    }
+
+    fun covers(claim: Claim): Boolean = inEffectFor(claim.failureDate) && withinLimitOfLiability(claim.amount)
+
+    fun inEffectFor(failureDate: LocalDate): Boolean =
+        termsAndConditions.status(failureDate) == Status.ACTIVE && status == Status.ACTIVE
+
+    fun withinLimitOfLiability(claimAmount: Double): Boolean = claimAmount < remainingLiability()
+
+    fun remainingLiability() = termsAndConditions.limitOfLiability(purchasePrice) - claimTotal()
+
+    fun claimTotal(): Double = claims.sumOf { it.amount }
+
+    fun extendAnnualSubscription() {
+        termsAndConditions = termsAndConditions.annuallyExtended()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -30,5 +46,4 @@ class Contract(var purchasePrice: Double, var coveredProduct: Product, var purch
 
         return id == other.id
     }
-
 }
