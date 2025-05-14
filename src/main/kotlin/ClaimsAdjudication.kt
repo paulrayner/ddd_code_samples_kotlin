@@ -1,5 +1,7 @@
 package warranty
 
+import java.time.LocalDate
+
 /**
  * Adjudicate/adjudication - a judgment made on a claim to determine whether
  * we are legally obligated to process the claim against the warranty. From
@@ -11,12 +13,20 @@ package warranty
 
 class ClaimsAdjudication {
     fun adjudicate(contract: Contract, newClaim: Claim) {
-        val claimTotal = contract.claims.sumOf { it.amount }
-        if (((contract.purchasePrice - claimTotal) * 0.8 > newClaim.amount) &&
-            (contract.status == Contract.Status.ACTIVE) &&
-            (newClaim.failureDate >= contract.effectiveDate) &&
-            (newClaim.failureDate <= contract.expirationDate)) {
+        if ((limitOfLiability(contract) > newClaim.amount) &&
+            (inEffectFor(contract, newClaim.failureDate))) {
             contract.add(newClaim)
         }
+    }
+
+    fun limitOfLiability(contract: Contract): Double {
+        val claimTotal = contract.claims.sumOf { it.amount }
+        return (contract.purchasePrice - claimTotal) * 0.8;
+    }
+
+    fun inEffectFor(contract: Contract, failureDate: LocalDate): Boolean {
+        return (contract.status == Contract.Status.ACTIVE) &&
+                (failureDate >= contract.effectiveDate) &&
+                (failureDate <= contract.expirationDate);
     }
 }
