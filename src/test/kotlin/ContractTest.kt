@@ -105,6 +105,23 @@ class ContractTest {
         assertEquals("Automatic Annual Renewal", (contract.events[0] as SubscriptionRenewed).reason)
     }
 
+    // TODO: Practice using domain events by making this test pass
+//    @Test
+//    fun terminateContract() {
+//        val product = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
+//        val termsAndConditions = TermsAndConditions(LocalDate.of(2010, 5, 7), LocalDate.of(2010, 5, 8), LocalDate.of(2013, 5, 8))
+//        val contract = Contract(100.0, product, termsAndConditions)
+//
+//        contract.terminate("Debbie", "Limit of Liability Exceeded")
+//
+//        assertEquals(Contract.Status.FULFILLED, contract.status)
+//        assertEquals(1, contract.events.size)
+//        assertTrue(contract.events[0] is CustomerReimbursementRequested)
+//        assertEquals(contract.id, (contract.events[0] as CustomerReimbursementRequested).contractId)
+//        assertEquals("Debbie", (contract.events[0] as CustomerReimbursementRequested).repName)
+//        assertEquals("Limit of Liability Exceeded", (contract.events[0] as CustomerReimbursementRequested).reason)
+//    }
+
     // Entities compare by unique IDs, not properties
     @Test
     fun contractEquality() {
