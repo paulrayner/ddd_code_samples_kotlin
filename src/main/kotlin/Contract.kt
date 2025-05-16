@@ -11,7 +11,7 @@ import java.util.*
  */
 class Contract(var purchasePrice: Double, var coveredProduct: Product, var termsAndConditions: TermsAndConditions) {
     enum class Status {
-        PENDING, ACTIVE, EXPIRED
+        PENDING, ACTIVE, EXPIRED, FULFILLED
     }
 
     var id: UUID = UUID.randomUUID()
@@ -39,6 +39,11 @@ class Contract(var purchasePrice: Double, var coveredProduct: Product, var terms
     fun extendAnnualSubscription() {
         termsAndConditions = termsAndConditions.annuallyExtended()
         events.add(SubscriptionRenewed(this.id, "Automatic Annual Renewal"))
+    }
+
+    fun terminate(repName: String, reason: String) {
+        status = Status.FULFILLED
+        events.add(CustomerReimbursementRequested(this.id, repName, reason))
     }
 
     override fun equals(other: Any?): Boolean {
