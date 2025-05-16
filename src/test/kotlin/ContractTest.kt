@@ -99,6 +99,10 @@ class ContractTest {
             TermsAndConditions(LocalDate.of(2010, 5, 7), LocalDate.of(2010, 5, 8), LocalDate.of(2014, 5, 8))
 
         assertEquals(extendedTermsAndConditions, contract.termsAndConditions)
+        assertEquals(1, contract.events.size)
+        assertTrue(contract.events[0] is SubscriptionRenewed)
+        assertEquals(contract.id, (contract.events[0] as SubscriptionRenewed).contractId)
+        assertEquals("Automatic Annual Renewal", (contract.events[0] as SubscriptionRenewed).reason)
     }
 
     // Entities compare by unique IDs, not properties

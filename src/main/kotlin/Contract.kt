@@ -19,6 +19,8 @@ class Contract(var purchasePrice: Double, var coveredProduct: Product, var terms
 
     val claims: MutableList<Claim> = mutableListOf()
 
+    var events: MutableList<ContractEvent> = mutableListOf()
+
     fun add(claim: Claim) {
         claims.add(claim)
     }
@@ -36,6 +38,7 @@ class Contract(var purchasePrice: Double, var coveredProduct: Product, var terms
 
     fun extendAnnualSubscription() {
         termsAndConditions = termsAndConditions.annuallyExtended()
+        events.add(SubscriptionRenewed(this.id, "Automatic Annual Renewal"))
     }
 
     override fun equals(other: Any?): Boolean {
